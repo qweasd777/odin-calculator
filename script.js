@@ -2,9 +2,11 @@
 //const btnAll_brushes = document.querySelectorAll('.brushType');
 //const btn_clear = document.querySelector('#setClear');
 // ---------- BUTTONS ----------
-let inputMain = null;       // current input on calculator
-let inputSub = null;        // prev input on calculator
-let inputOperator = null;
+// current input on calculator
+const displayMain = document.querySelector('.main');       
+// prev input on calculator
+const displaySub = document.querySelector('.sub');        
+const inputOperator = document.querySelector('.operator');   
 
 const Operators = {
 	ADD: "+",
@@ -12,7 +14,6 @@ const Operators = {
 	MULTIPLY: "x",      // might be wrong char
 	DIVIDE: "÷"         // might be wrong char
 };
-
 
 function add(num1, num2) {
     return num1 + num2;
@@ -43,4 +44,8 @@ function operate(num1, num2, op) {
         default:
             return "undefined operation";
     }
+}
+
+function updateDisplay() {
+    
 }

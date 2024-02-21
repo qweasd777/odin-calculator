@@ -1,12 +1,8 @@
-// ---------- BUTTONS ----------
-//const btnAll_brushes = document.querySelectorAll('.brushType');
-//const btn_clear = document.querySelector('#setClear');
-// ---------- BUTTONS ----------
 // current input on calculator
-const displayMain = document.querySelector('.main');       
+const displayMainText = document.querySelector('.main-text').innerHTML;       
 // prev input on calculator
-const displaySub = document.querySelector('.sub');        
-const inputOperator = document.querySelector('.operator');   
+const displaySubText = document.querySelector('.sub-text').innerHTML;        
+const displayOpText = document.querySelector('.op-text').innerHTML;   
 
 const Operators = {
 	ADD: "+",
@@ -46,6 +42,42 @@ function operate(num1, num2, op) {
     }
 }
 
-function updateDisplay() {
-    
+// Main handler when any button is pressed
+function buttonHandler() {
+    switch(this.dataset.type)
+    {
+        case "number":
+            // console.log(this.innerHTML);
+            break;
+
+        case "decimal":
+            break;
+
+        case "operator":
+            break;
+
+        case "equal":
+            break;
+
+        case "clear":
+        default:
+            if(this.dataset.value == "all_clear")
+            {
+
+            }
+            else if(this.dataset.value == "delete")
+            {
+
+            }
+            break;
+    }
 }
+
+// ---------- BUTTONS ----------
+const btn_all = document.querySelectorAll('button');
+//const btn_clear = document.querySelector('#setClear');
+
+btn_all.forEach(btn => btn.addEventListener('click', buttonHandler));
+
+
+// ---------- BUTTONS ----------

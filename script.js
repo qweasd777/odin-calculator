@@ -1,8 +1,14 @@
 // current input on calculator
-const displayMainText = document.querySelector('.main-text').innerHTML;       
+const displayMain = document.querySelector('.main-text');       
 // prev input on calculator
-const displaySubText = document.querySelector('.sub-text').innerHTML;        
-const displayOpText = document.querySelector('.op-text').innerHTML;   
+const displaySub = document.querySelector('.sub-text');        
+const displayOp = document.querySelector('.op-text');   
+
+// variables to store number string
+let mainNumStr = "0";
+let subNumStr = null;
+let op = null;
+
 
 const Operators = {
 	ADD: "+",
@@ -47,10 +53,24 @@ function buttonHandler() {
     switch(this.dataset.type)
     {
         case "number":
-            // console.log(this.innerHTML);
+            if(displayMain.innerHTML === "0")
+                mainNumStr = this.innerHTML;
+            else
+                mainNumStr += this.innerHTML;
+            
+            // update display
+            displayMain.innerHTML = mainNumStr;
+            
             break;
 
         case "decimal":
+            if(mainNumStr && !mainNumStr.includes("."))
+            {
+                mainNumStr += this.innerHTML;
+            
+                // update display
+                displayMain.innerHTML = mainNumStr;
+            }
             break;
 
         case "operator":
@@ -60,15 +80,26 @@ function buttonHandler() {
             break;
 
         case "clear":
-        default:
-            if(this.dataset.value == "all_clear")
+            if(this.value == "all_clear")
             {
+                mainNumStr = "0";
+                subNumStr = null;
+                op = null;
 
+                displaySub.innerHTML = subNumStr;
             }
-            else if(this.dataset.value == "delete")
+            else if(this.value == "delete")
             {
+                // remove last char if main is not 0
+                if(mainNumStr !== "0")                    
+                    mainNumStr = mainNumStr.slice(0, -1);
 
+                // if main is now only a negative op OR null, chg it to 0
+                if(mainNumStr === "-" || mainNumStr === "")
+                    mainNumStr = "0";
             }
+            displayMain.innerHTML = mainNumStr;
+            
             break;
     }
 }

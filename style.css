@@ -58,10 +58,10 @@ body {
     display: flex;
 }
 .display .main-text {
-    font-size: 2em;
+    font-size: 2rem;
 }
 .display .sub-text, .op-text  {
-    font-size: 1.5em;
+    font-size: 1.5rem;
 
 }
 .zero {

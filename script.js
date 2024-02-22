@@ -13,8 +13,8 @@ let op = null;
 const Operators = {
 	ADD: "+",
 	SUBTRACT: "-",
-	MULTIPLY: "x",      // might be wrong char
-	DIVIDE: "÷"         // might be wrong char
+	MULTIPLY: "x",      
+	DIVIDE: "÷"         
 };
 
 function add(num1, num2) {
@@ -33,7 +33,13 @@ function divide(num1, num2) {
     return num1 / num2;
 }
 
-function operate(num1, num2, op) {
+function operate(prevNumStr, currNumStr, op) {
+    const num1 = parseFloat(prevNumStr);
+    const num2 = parseFloat(currNumStr);
+
+    if(typeof(num1) !== "number" || typeof(num2) !== "number")
+        return NaN;
+
     switch(op) {
         case Operators.ADD:
             return add(num1, num2);
@@ -44,7 +50,7 @@ function operate(num1, num2, op) {
         case Operators.DIVIDE:
             return divide(num1, num2);
         default:
-            return "undefined operation";
+            return NaN;
     }
 }
 
@@ -53,7 +59,7 @@ function buttonHandler() {
     switch(this.dataset.type)
     {
         case "number":
-            if(displayMain.innerHTML === "0")
+            if(displayMain.innerHTML === "0" || mainNumStr === null)
                 mainNumStr = this.innerHTML;
             else
                 mainNumStr += this.innerHTML;
@@ -64,7 +70,10 @@ function buttonHandler() {
             break;
 
         case "decimal":
-            if(mainNumStr && !mainNumStr.includes("."))
+            if(!mainNumStr)
+                mainNumStr = "0";
+            
+            if(!mainNumStr.includes("."))
             {
                 mainNumStr += this.innerHTML;
             
@@ -74,6 +83,30 @@ function buttonHandler() {
             break;
 
         case "operator":
+            // bring mainNum to subNum if there's no subNum & empty mainNum
+            if(!subNumStr) 
+            {
+                subNumStr = mainNumStr;
+                mainNumStr = null;
+                displaySub.innerHTML = subNumStr;
+            }
+
+            // if user alrd entered some num ie. substr has some num
+            if(mainNumStr)
+            {
+                const answer = operate(subNumStr, mainNumStr, op);
+                // update "backend" values
+                subNumStr = answer;
+                mainNumStr = null;
+                // update "frontend" values
+                displaySub.innerHTML = answer;
+                displayMain.innerHTML = answer;
+            }
+
+            // update operator
+            op = this.innerHTML;
+            displayOp.innerHTML = "&nbsp;" + op;
+
             break;
 
         case "equal":
@@ -87,15 +120,16 @@ function buttonHandler() {
                 op = null;
 
                 displaySub.innerHTML = subNumStr;
+                displayOp.innerHTML = op;
             }
             else if(this.value == "delete")
             {
-                // remove last char if main is not 0
-                if(mainNumStr !== "0")                    
+                // remove last char if mainNum is not null or 0
+                if(mainNumStr && mainNumStr !== "0")                    
                     mainNumStr = mainNumStr.slice(0, -1);
 
-                // if main is now only a negative op OR null, chg it to 0
-                if(mainNumStr === "-" || mainNumStr === "")
+                // if mainNum is now null, a -ve op OR empty, chg it to 0
+                if(!mainNumStr || mainNumStr === "-" || mainNumStr === "")
                     mainNumStr = "0";
             }
             displayMain.innerHTML = mainNumStr;

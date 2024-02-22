@@ -72,7 +72,7 @@ function buttonHandler() {
         case "decimal":
             if(!mainNumStr)
                 mainNumStr = "0";
-            
+
             if(!mainNumStr.includes("."))
             {
                 mainNumStr += this.innerHTML;
@@ -95,12 +95,13 @@ function buttonHandler() {
             if(mainNumStr)
             {
                 const answer = operate(subNumStr, mainNumStr, op);
-                // update "backend" values
-                subNumStr = answer;
-                mainNumStr = null;
                 // update "frontend" values
                 displaySub.innerHTML = answer;
                 displayMain.innerHTML = answer;
+
+                // update "backend" values
+                subNumStr = answer;
+                mainNumStr = null;
             }
 
             // update operator
@@ -110,6 +111,21 @@ function buttonHandler() {
             break;
 
         case "equal":
+            // check if user has keyed in all numStr and operator
+            if(mainNumStr && subNumStr && op)
+            {
+                const answer = operate(subNumStr, mainNumStr, op);
+
+                // update "frontend" values
+                displaySub.innerHTML += "&nbsp;" + op + "&nbsp;" + mainNumStr + "&nbsp;" + "=";
+                displayMain.innerHTML = answer;
+                displayOp.innerHTML = "";
+
+                // update "backend" values
+                subNumStr = null;
+                mainNumStr = answer;
+                op = null;
+            }
             break;
 
         case "clear":

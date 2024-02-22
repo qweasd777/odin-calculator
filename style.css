@@ -61,8 +61,10 @@ body {
     font-size: 2rem;
 }
 .display .sub-text, .op-text  {
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
 
+    font-size: 1.5rem;
 }
 .zero {
     grid-column: span 2;

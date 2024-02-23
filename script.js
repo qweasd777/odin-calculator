@@ -55,14 +55,40 @@ function operate(prevNumStr, currNumStr, op) {
 }
 
 // Main handler when any button is pressed
-function buttonHandler() {
-    switch(this.dataset.type)
+function buttonHandler(e) {
+    
+    let btn;
+    let btnType = null;
+    
+    // check if handling btn thru keydown presses
+    if(e.type === "keydown")      
+    {   
+        // look for keycode in alt keycode data place if cant find 
+        btn =   document.querySelector(`button[data-key="${e.keyCode}"]`) || 
+                document.querySelector(`button[data-keyAlt="${e.keyCode}"]`);
+        
+        // if keycode is not relevant (ie. btn cant be found)
+        if(!btn)
+            return;
+
+        btnType = btn.dataset.type;
+    }
+    else       
+    {
+        btn = this;
+        btnType = this.dataset.type;
+    }
+
+    switch(btnType)
     {
         case "number":
+            if(mainNumStr === NaN || mainNumStr === Infinity)
+                break;
+
             if(displayMain.innerHTML === "0" || mainNumStr === null)
-                mainNumStr = this.innerHTML;
+                mainNumStr = btn.innerHTML;
             else
-                mainNumStr += this.innerHTML;
+                mainNumStr += btn.innerHTML;
             
             // update display
             displayMain.innerHTML = mainNumStr;
@@ -70,12 +96,15 @@ function buttonHandler() {
             break;
 
         case "decimal":
-            if(!mainNumStr)
-                mainNumStr = "0";
+            if(mainNumStr === NaN || mainNumStr === Infinity)
+                break;
 
+            if(!mainNumStr || mainNumStr === "")
+                mainNumStr = "0";
+            console.log(mainNumStr);
             if(!mainNumStr.includes("."))
             {
-                mainNumStr += this.innerHTML;
+                mainNumStr += btn.innerHTML;
             
                 // update display
                 displayMain.innerHTML = mainNumStr;
@@ -94,18 +123,18 @@ function buttonHandler() {
             // if user alrd entered some num ie. substr has some num
             if(mainNumStr)
             {
-                const answer = operate(subNumStr, mainNumStr, op);
+                const answer = "" + operate(subNumStr, mainNumStr, op);
                 // update "frontend" values
                 displaySub.innerHTML = answer;
                 displayMain.innerHTML = answer;
 
                 // update "backend" values
-                subNumStr = answer;
+                subNumStr =  answer;
                 mainNumStr = null;
             }
 
             // update operator
-            op = this.innerHTML;
+            op = btn.innerHTML;
             displayOp.innerHTML = "&nbsp;" + op;
 
             break;
@@ -114,7 +143,7 @@ function buttonHandler() {
             // check if user has keyed in all numStr and operator
             if(mainNumStr && subNumStr && op)
             {
-                const answer = operate(subNumStr, mainNumStr, op);
+                const answer = "" + operate(subNumStr, mainNumStr, op);
 
                 // update "frontend" values
                 displaySub.innerHTML += "&nbsp;" + op + "&nbsp;" + mainNumStr + "&nbsp;" + "=";
@@ -129,7 +158,7 @@ function buttonHandler() {
             break;
 
         case "clear":
-            if(this.value == "all_clear")
+            if(btn.innerHTML == "AC")
             {
                 mainNumStr = "0";
                 subNumStr = null;
@@ -138,7 +167,7 @@ function buttonHandler() {
                 displaySub.innerHTML = subNumStr;
                 displayOp.innerHTML = op;
             }
-            else if(this.value == "delete")
+            else if(btn.innerHTML == "DEL")
             {
                 // remove last char if mainNum is not null or 0
                 if(mainNumStr && mainNumStr !== "0")                    
@@ -151,6 +180,9 @@ function buttonHandler() {
             displayMain.innerHTML = mainNumStr;
             
             break;
+        
+        default:
+            alert("buttonHandler() ERROR: Undefined button data-type!");
     }
 }
 
@@ -160,5 +192,11 @@ const btn_all = document.querySelectorAll('button');
 
 btn_all.forEach(btn => btn.addEventListener('click', buttonHandler));
 
-
+window.addEventListener('keydown', buttonHandler);
 // ---------- BUTTONS ----------
+
+// keyboard btns
+// num 0-9
+// add, sub, mult, div
+// del (AC), backspace (DEL)
+// enter = "="
